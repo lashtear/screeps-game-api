@@ -57,7 +57,21 @@ pub use stdweb::{
 macro_rules! js_unwrap {
     ($($code:tt)*) => (
         crate::traits::TryInto::try_into(js! { return $($code)*; })
-            .expect(concat!("js_unwrap at ", line!(), " in ", file!()))
+            .unwrap_or_else(|e| {
+                // use panic! manually to get Display rather than Debug representation of the error
+                panic!(
+                    concat!(
+                        "js_unwrap: type conversion failed at ",
+                        file!(),
+                        ":",
+                        line!(),
+                        ":",
+                        column!(),
+                        ". error: {}"
+                    ),
+                    e,
+                )
+            })
     )
 }
 
@@ -83,7 +97,21 @@ macro_rules! js_unwrap {
 macro_rules! js_unwrap_ref {
     ($($code:tt)*) => (
         crate::traits::IntoExpectedType::into_expected_type(js! { return $($code)*; })
-            .expect(concat!("js_unwrap_ref at ", line!(), " in ", file!()))
+            .unwrap_or_else(|e| {
+                // use panic! manually to get Display rather than Debug representation of the error
+                panic!(
+                    concat!(
+                        "js_unwrap_ref: type conversion failed at ",
+                        file!(),
+                        ":",
+                        line!(),
+                        ":",
+                        column!(),
+                        ". error: {}"
+                    ),
+                    e,
+                )
+            })
     )
 }
 
