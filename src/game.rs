@@ -47,6 +47,9 @@ pub mod flags {
 pub mod rooms {
     use std::collections::HashMap;
 
+    use serde::de::Error;
+    use stdweb::{serde::ConversionError, Object};
+
     use crate::{local::RoomName, macros::*, objects::Room};
 
     /// Retrieve the full `HashMap<RoomName, Room>`.
@@ -54,16 +57,9 @@ pub mod rooms {
         // `TryFrom<Value>` is only implemented for `HashMap<String, V>`.
         //
         // See https://github.com/koute/stdweb/issues/359.
-        let map: HashMap<String, Room> = js_unwrap!(Game.rooms);
-        map.into_iter()
-            .map(|(key, val)| {
-                (
-                    key.parse()
-                        .expect("expected room name in Game.rooms to be valid"),
-                    val,
-                )
-            })
-            .collect()
+        let map: Object = js_unwrap!(Game.rooms);
+        map.to_map_parsing_keys(|k| k.parse().map_err(|e| ConversionError::custom(e).into()))
+            .expect("expected Game.rooms to contain Rooms")
     }
 
     /// Retrieve the string keys of this object.
