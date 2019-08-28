@@ -16,6 +16,14 @@ use super::{
 };
 use crate::macros::*;
 
+/// The success or failure of an action in Screeps.
+///
+/// `ReturnCode::Ok` represents success, all other variants represent various
+/// failures.
+///
+/// All variants of `ReturnCode` are present in [`screeps::prelude`].
+///
+/// [`screeps::prelude`]: crate::prelude
 #[derive(
     Debug, PartialEq, Eq, Clone, Copy, FromPrimitive, Hash, Deserialize_repr, Serialize_repr,
 )]
@@ -54,6 +62,7 @@ impl ReturnCode {
 
 js_deserializable!(ReturnCode);
 
+/// One of the 8 cardinal directions.
 #[derive(
     Debug, PartialEq, Eq, Clone, Copy, Hash, FromPrimitive, Serialize_repr, Deserialize_repr,
 )]
@@ -164,6 +173,9 @@ impl From<ExitDirection> for Direction {
     }
 }
 
+/// One of the colors usable on [`Flag`]s.
+///
+/// [`Flag`]: crate::Flag
 #[derive(
     Debug, PartialEq, Eq, Clone, Copy, FromPrimitive, Hash, Deserialize_repr, Serialize_repr,
 )]
