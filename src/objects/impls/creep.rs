@@ -26,8 +26,7 @@ impl Creep {
         let mut body_parts: Vec<Bodypart> = Vec::with_capacity(len as usize);
 
         for i in 0..len {
-            let boost_v =
-                js!(const b=@{self.as_ref()}.body[@{i}].boost||null;return b&&__resource_type_str_to_num(b););
+            let boost_v = js!(const b=@{self.as_ref()}.body[@{i}].boost||null;return b&&__resource_type_str_to_num(b););
             let boost = match boost_v {
                 Value::Number(_) => {
                     Some(ResourceType::try_from(boost_v).expect("Creep boost resource unknown."))
@@ -61,7 +60,9 @@ impl Creep {
 
     pub fn drop(&self, ty: ResourceType, amount: Option<u32>) -> ReturnCode {
         match amount {
-            Some(v) => js_unwrap!(@{self.as_ref()}.drop(__resource_type_num_to_str(@{ty as u32}), @{v})),
+            Some(v) => {
+                js_unwrap!(@{self.as_ref()}.drop(__resource_type_num_to_str(@{ty as u32}), @{v}))
+            }
             None => js_unwrap!(@{self.as_ref()}.drop(__resource_type_num_to_str(@{ty as u32}))),
         }
     }
