@@ -28,7 +28,7 @@ all-features = true
 rustdoc-args = ["--cfg", "docsrs"]
 
 [dependencies]
-arrayvec = "0.5"
+arrayvec = "0.7.2"
 enum_dispatch = "0.3"
 enum-iterator = "0.7.0"
 js-sys = "0.3"
