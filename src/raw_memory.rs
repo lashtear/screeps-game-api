@@ -18,7 +18,7 @@ extern "C" {
     /// as values.
     ///
     /// [Screeps documentation](https://docs.screeps.com/api/#RawMemory.segments)
-    #[wasm_bindgen(static_method_of = RawMemory, getter = segments)]
+    #[wasm_bindgen(structural, static_method_of = RawMemory, getter = segments)]
     fn segments_internal() -> Object;
 
     // todo ForeignSegment struct
@@ -75,17 +75,29 @@ extern "C" {
 }
 
 impl RawMemory {
-    /// Get a [`JsHashMap<u8, String>`] with all of the segments requested on the previous
-    /// tick, with segment numbers as keys and segment data in [`JsString`] form
-    /// as values.
+    /// Get a [`JsHashMap<u8, String>`] with all of the segments requested on
+    /// the previous tick, with segment numbers as keys and segment data in
+    /// [`JsString`] form as values.
     ///
     /// [Screeps documentation](https://docs.screeps.com/api/#RawMemory.segments)    
     pub fn segments() -> JsHashMap<u8, String> {
         RawMemory::segments_internal().into()
     }
 
+    pub fn read_segment(segment_id: u8) -> Option<String> {
+        RawMemory::segments().get(segment_id)
+    }
+
+    pub fn write_segment(segment_id: u8, content: &str) {
+        JsHashMap::<u8, JsString>::from(RawMemory::segments_internal())
+            .set(segment_id, JsString::from(content))
+    }
+
     pub fn set_active_segments(segment_ids: &[u8]) {
-        let segment_ids: Array = segment_ids.iter().map(|s| *s as f64).map(JsValue::from_f64).collect();
+        let segment_ids: Array = segment_ids
+            .iter()
+            .map(|s| JsValue::from_f64(*s as f64))
+            .collect();
 
         RawMemory::set_active_segments_internal(&segment_ids)
     }
@@ -127,13 +139,13 @@ impl RawMemory {
 //     }
 // }
 
-// /// This drops the reference to a segment; it doesn't affect the content of the
-// /// segment.
+// /// This drops the reference to a segment; it doesn't affect the content of
+// the /// segment.
 // ///
-// /// This is the equivalent of doing `delete RawMemory.segments[id]`. Again, this
-// /// only deletes the local view of the segment, not the serialized one. It may
-// /// be used to `set_segment` a new segment that wasn't part of the original 10
-// /// active segments.
+// /// This is the equivalent of doing `delete RawMemory.segments[id]`. Again,
+// this /// only deletes the local view of the segment, not the serialized one.
+// It may /// be used to `set_segment` a new segment that wasn't part of the
+// original 10 /// active segments.
 // pub fn drop_segment(id: u32) {
 //     js! { @(no_return)
 //         delete RawMemory.segments[@{id}];
