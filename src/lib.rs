@@ -30,7 +30,7 @@ pub mod game;
 #[cfg_attr(docsrs, doc(cfg(feature = "enable-inter-shard-memory")))]
 pub mod inter_shard_memory;
 pub mod local;
-// pub mod memory;
+pub mod memory;
 pub mod objects;
 pub mod pathfinder;
 pub mod prototypes;
@@ -39,7 +39,7 @@ pub mod traits;
 pub mod containers;
 
 pub use crate::{
-    constants::*, containers::*, enums::*, game::*, local::*, objects::*, pathfinder::*, raw_memory::*, traits::*,
+    constants::*, containers::*, enums::*, game::*, local::*, objects::*, pathfinder::*, traits::*,
 };
 
 #[cfg(feature = "enable-inter-shard-memory")]
